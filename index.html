@@ -58,14 +58,14 @@ input{font-family:inherit;outline:none}
           </button>
         </sc-for>
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:14px;background:var(--tg-theme-secondary-bg-color,#16181f);margin-bottom:26px">
-        <div><div style="font-size:15px">Timeframe</div><div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c)">how long we work together</div></div>
-        <div style="display:flex;align-items:center;gap:4px">
-          <button onClick="{{ tfM }}" style="width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.07);color:inherit;font-size:20px">−</button>
-          <div style="min-width:74px;text-align:center;font:600 17px 'Space Grotesk',sans-serif">{{ tfV }}</div>
-          <button onClick="{{ tfP }}" style="width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.07);color:inherit;font-size:20px">+</button>
+      <sc-if value="{{ runVisible }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:14px;background:var(--tg-theme-secondary-bg-color,#16181f);margin-bottom:26px">
+          <div><div style="font-size:15px">Add running to your plan?</div><div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c)">one optional run/walk day per week</div></div>
+          <button onClick="{{ runTog }}" style="position:relative;width:44px;height:26px;border-radius:999px;border:none;background:{{ runKnobBg }};flex:none;transition:background .2s">
+            <span style="position:absolute;top:2px;left:{{ runKnobX }};width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s"></span>
+          </button>
         </div>
-      </div>
+      </sc-if>
       <button onClick="{{ obNext1 }}" style="width:100%;padding:17px;border-radius:16px;border:none;background:var(--ac,#FF4D6D);color:#fff;font:600 17px 'Space Grotesk',sans-serif">Continue</button>
     </div>
   </sc-if>
@@ -90,7 +90,26 @@ input{font-family:inherit;outline:none}
           </div>
         </sc-for>
       </div>
-      <div style="font:600 13px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Work type</div>
+      <div style="padding:12px 14px;border-radius:14px;background:var(--tg-theme-secondary-bg-color,#16181f);margin-bottom:8px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:15px">Reach your goal by</div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <button onClick="{{ tfM }}" style="width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.07);color:inherit;font-size:20px">−</button>
+            <div style="min-width:74px;text-align:center;font:600 17px 'Space Grotesk',sans-serif">{{ tfV }}</div>
+            <button onClick="{{ tfP }}" style="width:38px;height:38px;border-radius:12px;border:none;background:rgba(255,255,255,.07);color:inherit;font-size:20px">+</button>
+          </div>
+        </div>
+        <div style="font:600 13.5px 'Space Grotesk',sans-serif;color:{{ pace.c }};margin-top:10px">{{ pace.line }}</div>
+        <sc-if value="{{ pace.hasHint }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
+            <span style="font-size:12.5px;color:{{ pace.c }}">{{ pace.hint }}</span>
+            <sc-if value="{{ pace.suggOn }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ pace.useSugg }}" style="padding:7px 12px;border-radius:999px;border:1.5px solid #f4c95d;background:rgba(244,201,93,.1);color:#f4c95d;font:600 12px 'Space Grotesk',sans-serif">{{ pace.suggLabel }}</button>
+            </sc-if>
+          </div>
+        </sc-if>
+      </div>
+      <div style="font:600 13px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 8px">Work type</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px">
         <sc-for list="{{ workChips }}" as="c" hint-placeholder-count="3"><button onClick="{{ c.pick }}" style="padding:10px 14px;border-radius:999px;border:1.5px solid {{ c.bc }};background:{{ c.bg }};color:{{ c.c }};font:600 13px 'Space Grotesk',sans-serif">{{ c.label }}</button></sc-for>
       </div>
@@ -183,6 +202,14 @@ input{font-family:inherit;outline:none}
       <sc-if value="{{ whyOn }}" hint-placeholder-val="{{ false }}">
         <div style="display:inline-block;padding:8px 14px;border-radius:999px;background:var(--acs,rgba(255,77,109,.12));color:var(--ac,#FF4D6D);font:600 13px 'Space Grotesk',sans-serif;margin-bottom:8px">{{ whyV }}</div>
       </sc-if>
+      <div style="text-align:left;padding:14px 16px;border-radius:18px;background:var(--tg-theme-secondary-bg-color,#16181f);margin:4px 0 10px">
+        <div style="font:600 11px system-ui;color:var(--ac,#FF4D6D);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Why this plan</div>
+        <sc-for list="{{ planWhy }}" as="pw" hint-placeholder-count="4">
+          <div style="display:flex;gap:8px;padding:4px 0;font-size:13.5px;line-height:1.45;color:rgba(241,242,246,.88)">
+            <span style="color:var(--ac,#FF4D6D);flex:none">•</span><span>{{ pw }}</span>
+          </div>
+        </sc-for>
+      </div>
       <div style="height:280px;display:flex;justify-content:center;margin:6px 0 4px">{{ avatar }}</div>
       <div style="display:flex;justify-content:center;gap:18px;font-size:13px;color:var(--tg-theme-hint-color,#8a8f9c);margin-bottom:22px">
         <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--ac,#FF4D6D);margin-right:5px"></span>Now · {{ wNow }} {{ unitL }}</span>
@@ -489,6 +516,12 @@ input{font-family:inherit;outline:none}
     </button>
   </div>
   <div style="font:600 12px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">{{ weekBadge }}</div>
+  <sc-if value="{{ makeupOn }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:14px;background:rgba(244,201,93,.08);border:1px solid rgba(244,201,93,.25);margin-bottom:10px">
+      <span style="flex:1;font-size:13px;color:#f4c95d">Monday was missed — today's session covers it. Never stack more than one.</span>
+      <button onClick="{{ makeupDismiss }}" style="width:26px;height:26px;border-radius:50%;border:none;background:rgba(255,255,255,.07);color:var(--tg-theme-hint-color,#8a8f9c);font-size:13px;flex:none">×</button>
+    </div>
+  </sc-if>
   <div style="display:flex;flex-direction:column;gap:10px">
     <sc-for list="{{ days }}" as="d" hint-placeholder-count="3">
       <div style="padding:16px;border-radius:20px;background:var(--tg-theme-secondary-bg-color,#16181f);border:1.5px solid {{ d.bc }}">
@@ -500,6 +533,12 @@ input{font-family:inherit;outline:none}
           </div>
           <sc-if value="{{ d.today }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ openSession }}" style="padding:11px 18px;border-radius:999px;border:none;background:var(--ac,#FF4D6D);color:#fff;font:600 14px 'Space Grotesk',sans-serif;flex:none">{{ sessionCta }}</button>
+          </sc-if>
+          <sc-if value="{{ d.isRun }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:none">
+              <button onClick="{{ d.runLog }}" style="padding:10px 16px;border-radius:999px;border:1.5px solid #7cc3ff;background:rgba(124,195,255,.1);color:#7cc3ff;font:600 13px 'Space Grotesk',sans-serif">Log run</button>
+              <span style="font-size:10px;color:var(--tg-theme-hint-color,#8a8f9c);border:1px solid rgba(255,255,255,.12);padding:3px 8px;border-radius:999px">Apple Watch sync — soon</span>
+            </div>
           </sc-if>
           <sc-if value="{{ d.done }}" hint-placeholder-val="{{ false }}">
             <div style="width:34px;height:34px;border-radius:50%;background:rgba(111,211,154,.15);display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 24 24" style="width:16px;height:16px"><polyline points="5 12.5 10 17 19 7" fill="none" stroke="#6fd39a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div>
@@ -809,31 +848,65 @@ input{font-family:inherit;outline:none}
 <div data-screen-label="Session" style="position:absolute;inset:0;z-index:20;background:var(--tg-theme-bg-color,#0c0d11);overflow-y:auto;padding:max(14px,env(safe-area-inset-top)) 16px 110px;animation:fadeUp .25s ease both">
   <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
     <button onClick="{{ closeOv }}" style="width:40px;height:40px;border-radius:13px;border:none;background:var(--tg-theme-secondary-bg-color,#16181f);color:inherit;font-size:18px">←</button>
-    <div>
+    <div style="flex:1">
       <div style="font:700 20px 'Space Grotesk',sans-serif">{{ sessionName }}</div>
       <div style="font-size:12.5px;color:var(--tg-theme-hint-color,#8a8f9c)">{{ setsLabel }}</div>
     </div>
+    <button onClick="{{ openPain }}" style="padding:10px 13px;border-radius:999px;border:1.5px solid rgba(255,107,107,.35);background:rgba(255,107,107,.08);color:#ff6b6b;font:600 12.5px 'Space Grotesk',sans-serif;flex:none">⚑ Pain</button>
   </div>
   <div style="height:5px;border-radius:3px;background:rgba(255,255,255,.08);margin:10px 0 16px;overflow:hidden">
     <div style="height:100%;background:var(--ac,#FF4D6D);width:{{ setsPct }}%;transition:width .4s ease"></div>
+  </div>
+  <div style="border-radius:18px;background:var(--tg-theme-secondary-bg-color,#16181f);margin-bottom:10px;border:1.5px dashed rgba(255,255,255,.1)">
+    <button onClick="{{ warmTog }}" style="width:100%;display:flex;align-items:center;gap:10px;padding:13px 15px;border:none;background:none;color:inherit;text-align:left">
+      <span style="font:600 15px 'Space Grotesk',sans-serif;flex:1">Warm-up</span>
+      <span style="font-size:12px;font-weight:600;color:{{ warmStatusC }}">{{ warmStatus }}</span>
+      <svg viewBox="0 0 24 24" style="width:14px;height:14px;opacity:.5"><polyline points="6 9 12 15 18 9" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+    </button>
+    <sc-if value="{{ warmOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:0 15px 13px">
+        <sc-for list="{{ warmItems }}" as="wi" hint-placeholder-count="4">
+          <div style="display:flex;gap:8px;padding:3px 0;font-size:13.5px;color:rgba(241,242,246,.85)"><span style="color:var(--tg-theme-hint-color,#8a8f9c)">·</span>{{ wi }}</div>
+        </sc-for>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:10px">
+          <button onClick="{{ warmCheck }}" style="flex:1;padding:12px;border-radius:12px;border:none;background:var(--ac,#FF4D6D);color:#fff;font:600 14px 'Space Grotesk',sans-serif">Warm-up done</button>
+          <button onClick="{{ warmSkip }}" style="border:none;background:none;color:var(--tg-theme-hint-color,#8a8f9c);font-size:13px;text-decoration:underline;text-underline-offset:3px">skip</button>
+        </div>
+      </div>
+    </sc-if>
   </div>
   <div style="display:flex;flex-direction:column;gap:10px">
     <sc-for list="{{ exs }}" as="ex" hint-placeholder-count="6">
       <div style="padding:15px;border-radius:18px;background:var(--tg-theme-secondary-bg-color,#16181f)">
         <div style="display:flex;justify-content:space-between;align-items:baseline">
-          <button onClick="{{ ex.infoTap }}" style="border:none;background:none;color:inherit;padding:0;font:600 16px 'Space Grotesk',sans-serif;display:flex;align-items:center;gap:6px">{{ ex.n }}<svg viewBox="0 0 24 24" style="width:14px;height:14px;opacity:.5"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="8" r=".5"></circle></g></svg></button>
+          <button onClick="{{ ex.infoTap }}" style="border:none;background:none;color:inherit;padding:0;font:600 16px 'Space Grotesk',sans-serif;display:flex;align-items:center;gap:6px">{{ ex.n }}<svg viewBox="0 0 24 24" style="width:14px;height:14px;opacity:.5"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><line x1="12" y1="11" x2="12" y2="16"></line><circle cx="12" cy="8" r=".5"></circle></g></svg>
+            <sc-if value="{{ ex.painOn }}" hint-placeholder-val="{{ false }}"><span style="font:600 10.5px system-ui;color:#ff6b6b;border:1px solid rgba(255,107,107,.35);padding:2px 7px;border-radius:999px">{{ ex.painLabel }}</span></sc-if>
+          </button>
           <div style="font-size:13px;color:var(--tg-theme-hint-color,#8a8f9c)">{{ ex.reps }}</div>
         </div>
-        <sc-if value="{{ ex.hasLast }}" hint-placeholder-val="{{ false }}">
-          <div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);margin-top:3px">{{ ex.last }}</div>
+        <sc-if value="{{ ex.hasCue }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;line-height:1.45;color:rgba(241,242,246,.75);margin-top:5px">{{ ex.cue }}</div>
+        </sc-if>
+        <div style="display:flex;align-items:center;gap:12px;margin-top:5px;flex-wrap:wrap">
+          <sc-if value="{{ ex.hasLast }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c)">{{ ex.last }}</span>
+          </sc-if>
+          <button onClick="{{ ex.videoTap }}" style="border:none;background:none;color:var(--ac,#FF4D6D);font:600 12px 'Space Grotesk',sans-serif;padding:0;display:flex;align-items:center;gap:4px">
+            <svg viewBox="0 0 24 24" style="width:11px;height:11px"><polygon points="7 5 19 12 7 19" fill="currentColor"></polygon></svg>Watch form video
+          </button>
+        </div>
+        <sc-if value="{{ ex.hasProgn }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:12px;color:#6fd39a;margin-top:4px">{{ ex.progn }}</div>
         </sc-if>
         <sc-if value="{{ ex.entryOn }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px;border-radius:14px;background:var(--acs,rgba(255,77,109,.1));border:1.5px solid var(--acs,rgba(255,77,109,.25));animation:popIn .2s ease both">
+            <sc-if value="{{ eHasW }}" hint-placeholder-val="{{ true }}">
             <div style="display:flex;align-items:center;gap:2px">
               <button onClick="{{ eWm }}" style="width:34px;height:38px;border-radius:11px;border:none;background:rgba(255,255,255,.08);color:inherit;font-size:17px">−</button>
               <div style="min-width:62px;text-align:center"><div style="font:600 15px 'Space Grotesk',sans-serif">{{ eW }}</div><div style="font-size:10px;color:var(--tg-theme-hint-color,#8a8f9c)">weight</div></div>
               <button onClick="{{ eWp }}" style="width:34px;height:38px;border-radius:11px;border:none;background:rgba(255,255,255,.08);color:inherit;font-size:17px">+</button>
             </div>
+            </sc-if>
             <div style="display:flex;align-items:center;gap:2px">
               <button onClick="{{ eRm }}" style="width:34px;height:38px;border-radius:11px;border:none;background:rgba(255,255,255,.08);color:inherit;font-size:17px">−</button>
               <div style="min-width:36px;text-align:center"><div style="font:600 15px 'Space Grotesk',sans-serif">{{ eR }}</div><div style="font-size:10px;color:var(--tg-theme-hint-color,#8a8f9c)">reps</div></div>
@@ -848,9 +921,20 @@ input{font-family:inherit;outline:none}
             <button onClick="{{ eNo }}" style="width:34px;height:38px;border-radius:11px;border:none;background:rgba(255,255,255,.08);color:var(--tg-theme-hint-color,#8a8f9c);font-size:15px">×</button>
           </div>
         </sc-if>
+        <sc-if value="{{ ex.isCirc }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:10px;margin-top:12px">
+            <sc-if value="{{ ex.circDone }}" hint-placeholder-val="{{ false }}">
+              <div style="flex:1;height:50px;border-radius:15px;background:var(--acs,rgba(255,77,109,.12));border:1.5px solid var(--ac,#FF4D6D);color:var(--ac,#FF4D6D);display:flex;align-items:center;justify-content:center;font:600 14px 'Space Grotesk',sans-serif">✓ Circuit complete</div>
+            </sc-if>
+            <sc-if value="{{ ex.circNotDone }}" hint-placeholder-val="{{ true }}">
+              <button onClick="{{ ex.circStart }}" style="flex:1;height:50px;border-radius:15px;border:none;background:var(--ac,#FF4D6D);color:#fff;font:600 14px 'Space Grotesk',sans-serif">▶ Start circuit</button>
+              <span style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);flex:none">{{ ex.circMin }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
         <div style="display:flex;gap:9px;margin-top:12px;align-items:center">
           <sc-for list="{{ ex.sets }}" as="st" hint-placeholder-count="3">
-            <button onClick="{{ st.tap }}" style="width:50px;height:50px;border-radius:15px;border:1.5px solid {{ st.bc }};background:{{ st.bg }};color:{{ st.c }};font:600 16px 'Space Grotesk',sans-serif;flex:none">{{ st.l }}</button>
+            <button onClick="{{ st.tap }}" style="width:50px;height:50px;border-radius:15px;border:1.5px solid {{ st.bc }};background:{{ st.bg }};color:{{ st.c }};font:600 {{ st.fsz }}px 'Space Grotesk',sans-serif;flex:none">{{ st.l }}</button>
           </sc-for>
           <sc-if value="{{ ex.cam }}" hint-placeholder-val="{{ false }}">
             <button onClick="{{ ex.camTap }}" style="flex:1;height:50px;border-radius:15px;border:1.5px solid var(--acs,rgba(255,77,109,.25));background:var(--acs,rgba(255,77,109,.12));color:var(--ac,#FF4D6D);font:600 12.5px 'Space Grotesk',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px">
@@ -870,6 +954,81 @@ input{font-family:inherit;outline:none}
       <button onClick="{{ skipRest }}" style="border:none;background:rgba(255,255,255,.08);color:inherit;padding:7px 12px;border-radius:999px;font:600 12px 'Space Grotesk',sans-serif">Skip</button>
     </div>
   </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ ovCircuit }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Circuit" style="position:absolute;inset:0;z-index:42;background:#0c0d11;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,77,109,.1),transparent 60%)"></div>
+  <div style="position:absolute;top:max(14px,env(safe-area-inset-top));left:16px;right:16px;display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <div style="font:700 19px 'Space Grotesk',sans-serif;color:#fff">Conditioning circuit</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55)">{{ circD.round }}</div>
+    </div>
+    <button onClick="{{ circStop }}" style="padding:11px 18px;border-radius:999px;border:none;background:rgba(255,255,255,.14);color:#fff;font:600 14px 'Space Grotesk',sans-serif">Stop</button>
+  </div>
+  <div style="position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);text-align:center;padding:0 24px">
+    <div style="font:600 14px system-ui;letter-spacing:.14em;color:{{ circD.stageC }}">{{ circD.stage }}</div>
+    <div style="font:700 140px/1 'Space Grotesk',sans-serif;color:#fff;letter-spacing:-.04em;margin:6px 0">{{ circD.left }}</div>
+    <div style="font:700 24px 'Space Grotesk',sans-serif;color:#fff">{{ circD.station }}</div>
+    <div style="font-size:14px;color:rgba(255,255,255,.55);margin-top:8px">{{ circD.next }}</div>
+  </div>
+  <div style="position:absolute;left:16px;right:16px;bottom:calc(28px + env(safe-area-inset-bottom));display:flex;gap:10px">
+    <button onClick="{{ circPause }}" style="flex:1;padding:16px;border-radius:16px;border:none;background:rgba(255,255,255,.12);color:#fff;font:600 15px 'Space Grotesk',sans-serif">{{ circD.pauseL }}</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ ovPain }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Report pain" style="position:absolute;inset:0;z-index:44;background:var(--tg-theme-bg-color,#0c0d11);overflow-y:auto;padding:max(14px,env(safe-area-inset-top)) 16px 32px;animation:fadeUp .25s ease both">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+    <button onClick="{{ closeOv }}" style="width:40px;height:40px;border-radius:13px;border:none;background:var(--tg-theme-secondary-bg-color,#16181f);color:inherit;font-size:18px">←</button>
+    <div>
+      <div style="font:700 20px 'Space Grotesk',sans-serif;color:#ff6b6b">⚑ Report pain</div>
+      <div style="font-size:12.5px;color:var(--tg-theme-hint-color,#8a8f9c)">Sharp pain = stop. Your coach sees this immediately.</div>
+    </div>
+  </div>
+  <div style="font:600 12px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Where</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+    <sc-for list="{{ painAreaChips }}" as="pa" hint-placeholder-count="6">
+      <button onClick="{{ pa.pick }}" style="padding:10px 14px;border-radius:999px;border:1.5px solid {{ pa.bc }};background:{{ pa.bg }};color:{{ pa.c }};font:600 13px 'Space Grotesk',sans-serif">{{ pa.label }}</button>
+    </sc-for>
+  </div>
+  <div style="font:600 12px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">During which exercise</div>
+  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+    <sc-for list="{{ painExChips }}" as="pe" hint-placeholder-count="5">
+      <button onClick="{{ pe.pick }}" style="padding:9px 13px;border-radius:999px;border:1.5px solid {{ pe.bc }};background:{{ pe.bg }};color:{{ pe.c }};font:600 12px 'Space Grotesk',sans-serif">{{ pe.label }}</button>
+    </sc-for>
+  </div>
+  <input placeholder="Describe it briefly (optional)" value="{{ painTextV }}" onChange="{{ setPainText }}" style="width:100%;padding:14px;border-radius:14px;border:none;background:var(--tg-theme-secondary-bg-color,#16181f);color:inherit;font-size:14.5px;margin-bottom:16px">
+  <sc-if value="{{ painNotSaved }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ savePain }}" style="width:100%;padding:16px;border-radius:16px;border:none;background:#ff6b6b;color:#fff;font:600 16px 'Space Grotesk',sans-serif;opacity:{{ painSaveOp }}">Report to coach</button>
+  </sc-if>
+  <sc-if value="{{ painSaved }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:14px;border-radius:16px;background:rgba(111,211,154,.1);border:1px solid rgba(111,211,154,.3);color:#6fd39a;font-size:14px;text-align:center;margin-bottom:10px">Reported — saved to today's check-in</div>
+    <button onClick="{{ skipPainEx }}" style="width:100%;padding:15px;border-radius:16px;border:1.5px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:inherit;font:600 15px 'Space Grotesk',sans-serif">Skip this exercise today</button>
+  </sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{ ovVideo }}" hint-placeholder-val="{{ false }}">
+<div data-screen-label="Form video" style="position:absolute;inset:0;z-index:44;background:#000;overflow-y:auto">
+  <button onClick="{{ closeOv }}" style="position:absolute;top:max(14px,env(safe-area-inset-top));left:16px;z-index:2;width:40px;height:40px;border-radius:13px;border:none;background:rgba(255,255,255,.14);color:#fff;font-size:18px">←</button>
+  <div style="height:56%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:linear-gradient(160deg,#15161c,#0c0d11)">
+    <div style="width:74px;height:74px;border-radius:50%;background:var(--ac,#FF4D6D);display:flex;align-items:center;justify-content:center">
+      <svg viewBox="0 0 24 24" style="width:28px;height:28px;margin-left:3px"><polygon points="7 5 19 12 7 19" fill="#fff"></polygon></svg>
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5)">video embed placeholder</div>
+  </div>
+  <div style="padding:20px 22px">
+    <div style="font:700 22px 'Space Grotesk',sans-serif;color:#fff">{{ vidExN }}</div>
+    <sc-if value="{{ hasVidUrl }}" hint-placeholder-val="{{ false }}">
+      <div style="font-size:13px;color:rgba(255,255,255,.55);margin-top:6px;word-break:break-all">{{ vidUrl }}</div>
+    </sc-if>
+    <sc-if value="{{ noVidUrl }}" hint-placeholder-val="{{ true }}">
+      <div style="font-size:13.5px;color:rgba(255,255,255,.55);margin-top:6px">Your coach hasn't attached a video for this exercise yet — the form cues on the card are the source of truth.</div>
+    </sc-if>
+  </div>
 </div>
 </sc-if>
 
@@ -1046,6 +1205,12 @@ input{font-family:inherit;outline:none}
       <div style="font-size:13.5px">{{ dayRecap.extRList }}</div>
     </div>
   </sc-if>
+  <sc-if value="{{ dayRecap.hasPain }}" hint-placeholder-val="{{ false }}">
+    <div style="padding:14px;border-radius:20px;background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.25);margin-bottom:10px">
+      <div style="font:600 12px system-ui;color:#ff6b6b;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">⚑ Pain reported</div>
+      <div style="font-size:13.5px">{{ dayRecap.painList }}</div>
+    </div>
+  </sc-if>
   <sc-if value="{{ dayRecap.hasCi }}" hint-placeholder-val="{{ false }}">
     <div style="padding:14px;border-radius:20px;background:var(--tg-theme-secondary-bg-color,#16181f);margin-bottom:10px">
       <div style="font:600 12px system-ui;color:var(--tg-theme-hint-color,#8a8f9c);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px">Check-in</div>
@@ -1167,11 +1332,38 @@ input{font-family:inherit;outline:none}
                       </div>
                     </div>
                   </sc-for>
+                  <sc-if value="{{ er.isReps }}" hint-placeholder-val="{{ true }}">
+                    <div style="display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border-radius:11px;background:rgba(255,255,255,.05)">
+                      <div style="font-size:13px;flex:none">Reps</div>
+                      <input value="{{ er.repsV }}" onChange="{{ er.setRepsV }}" placeholder="e.g. 8-12 or 10 per leg" style="flex:1;min-width:0;background:none;border:none;color:inherit;font:600 13px 'Space Grotesk',sans-serif;text-align:right;padding:8px 0">
+                    </div>
+                  </sc-if>
+                  <sc-if value="{{ er.isCircE }}" hint-placeholder-val="{{ false }}">
+                    <div style="padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.05)">
+                      <div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);margin-bottom:4px">Stations (comma-separated)</div>
+                      <input value="{{ er.stationsV }}" onChange="{{ er.setStations }}" style="width:100%;background:none;border:none;color:inherit;font-size:13px;padding:4px 0">
+                    </div>
+                  </sc-if>
+                  <div style="padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.05)">
+                    <div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);margin-bottom:4px">Form cue (shown on the card)</div>
+                    <input value="{{ er.cueV }}" onChange="{{ er.setCue }}" placeholder="e.g. 3 seconds down. Chest up." style="width:100%;background:none;border:none;color:inherit;font-size:13px;padding:4px 0">
+                  </div>
+                  <div style="padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.05)">
+                    <div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);margin-bottom:4px">Form video URL</div>
+                    <input value="{{ er.videoV }}" onChange="{{ er.setVideo }}" placeholder="paste a link…" style="width:100%;background:none;border:none;color:inherit;font-size:13px;padding:4px 0">
+                  </div>
+                  <div style="padding:8px 10px;border-radius:11px;background:rgba(255,255,255,.05)">
+                    <div style="font-size:12px;color:var(--tg-theme-hint-color,#8a8f9c);margin-bottom:4px">Progression note</div>
+                    <input value="{{ er.prognV }}" onChange="{{ er.setProgn }}" placeholder="e.g. → 15 on all sets → jump squats" style="width:100%;background:none;border:none;color:inherit;font-size:13px;padding:4px 0">
+                  </div>
                 </div>
               </sc-if>
             </div>
           </sc-for>
-          <button onClick="{{ pd.addEx }}" style="height:38px;border-radius:12px;border:1.5px dashed rgba(255,255,255,.16);background:none;color:var(--ac,#FF4D6D);font:600 13px 'Space Grotesk',sans-serif">+ Add exercise</button>
+          <div style="display:flex;gap:6px">
+            <button onClick="{{ pd.addEx }}" style="flex:1;height:38px;border-radius:12px;border:1.5px dashed rgba(255,255,255,.16);background:none;color:var(--ac,#FF4D6D);font:600 13px 'Space Grotesk',sans-serif">+ Add exercise</button>
+            <button onClick="{{ pd.addCirc }}" style="height:38px;padding:0 12px;border-radius:12px;border:1.5px dashed rgba(255,255,255,.16);background:none;color:var(--tg-theme-hint-color,#8a8f9c);font:600 13px 'Space Grotesk',sans-serif">+ Circuit</button>
+          </div>
         </div>
       </div>
     </sc-for>
@@ -1893,7 +2085,123 @@ class Component extends DCLogic {
   }
   dayScore(d){ const t=new Date().getDate(); if(d>t) return null; if(d===t) return this.tasksDoneN(); return d%7===3?2:(d%11===5?0:(d%5===2?3:4)); }
   openDay(d){ this.setState(s=>({selDay:d,nav:s.nav.concat(['daydetail'])})); }
-  mkProg(goal){ return this.PROGT[goal].map(d=>({name:d[0],exs:d[1].map(i=>{const L=this.LIB[i];return {n:L.n,cam:L.cam,sets:3,reps:L.dr,wt:L.dw};})})); }
+  BWLIB = [
+    ['Bodyweight squat','Legs','Squat',0,15],['Reverse lunge','Legs',null,0,12],['Glute bridge','Legs',null,0,15],['Wall sit','Legs',null,0,40],
+    ['Push-up','Push',null,0,10],['Pike push-up','Push',null,0,8],['Table row','Pull',null,0,10],
+    ['Plank','Core',null,0,40],['Burpee','Cardio',null,0,8],['Mountain climbers','Cardio',null,0,20]
+  ].map(a=>({n:a[0],cat:a[1],cam:a[2],dw:a[3],dr:a[4]}));
+  exPool(it){ const loc=it.loc;
+    if(loc==='home, no equipment') return this.BWLIB;
+    if(loc==='home, basic') return this.BWLIB.concat(this.LIB.filter(L=>['Goblet squat','Biceps curl','Overhead press','Romanian deadlift','Lateral raises','Hammer curl'].includes(L.n)));
+    return this.LIB; }
+  repsOf(L,it){ const beg=it.exp!=='regular';
+    if(!beg) return L.dr;
+    const lo=Math.max(1,Math.round(L.dr*0.7));
+    return L.dr>=20?L.dr:lo+'-'+L.dr; }
+  CUEX = {'Bodyweight squat':'3 seconds down. Knees track over toes. Chest up.','Goblet squat':'Elbows inside knees at the bottom. Heels planted.','Reverse lunge':'Knee kisses the floor. Front heel drives you up.','Glute bridge':'Squeeze at the top for 2 seconds. Ribs down.','Wall sit':'Thighs parallel, whole back on the wall. Breathe.','Push-up':'Body one straight line. Elbows at 45°.','Pike push-up':'Hips high, look at your feet.','Table row':'Pull chest to the edge. Squeeze shoulder blades.','Plank':'Glutes tight, ribs down. Don\'t let hips sag.','Burpee':'Step back instead of jumping if form breaks.','Mountain climbers':'Hips level — no bouncing.','Romanian deadlift':'Hips back, soft knees. Bar close to the legs.','Overhead press':'Ribs down, glutes tight. Press slightly back.','Biceps curl':'Elbows pinned to your sides. No swing.'};
+  PROGX = {'Bodyweight squat':'→ 15 on all sets → move to jump squats','Push-up':'→ 12+ on all sets → feet-elevated push-ups','Wall sit':'→ 60s easy → single-leg wall sit','Plank':'→ 60s easy → plank shoulder taps','Glute bridge':'→ 15+ → single-leg glute bridge','Table row':'→ 12+ → lower the table edge'};
+  cueOf(L){ return this.CUEX[L.n]||(this.CUES[L.cat]||'').split('. ').slice(0,1).join('. ')+'.'; }
+  mkEx(L,it){
+    const hold=L.n==='Wall sit'||L.n==='Plank'||L.n==='Side plank';
+    const base={n:L.n,cam:L.cam,sets:3,wt:L.dw,cue:this.cueOf(L),video:'',progn:this.PROGX[L.n]||''};
+    if(hold) return Object.assign(base,{type:'hold',dur:Math.max(20,L.dr),reps:Math.max(20,L.dr)+'s'});
+    let reps=this.repsOf(L,it||this.DEFIN);
+    if(/lunge/i.test(L.n)) reps=reps+' per leg';
+    return Object.assign(base,{type:'reps',reps:String(reps)});
+  }
+  circTotal(ex){ return ex.rounds*ex.stations.length*(ex.work+ex.rest)+(ex.rounds-1)*ex.between; }
+  mkCirc(){ return {n:'Conditioning circuit',type:'circuit',sets:1,reps:'3 rounds · 30s on / 30s off',rounds:3,work:30,rest:30,between:120,stations:['Burpees','Mountain climbers','Jumping jacks','Plank shoulder taps'],cam:null,wt:0,cue:'Move the whole 30 seconds — pace beats speed.',video:'',progn:''}; }
+  startHold(ei,si,total){
+    clearInterval(this._timers.hold); this.haptic();
+    this.setState({hold:{ei,si,left:total,total}});
+    this._timers.hold=setInterval(()=>{
+      const h=this.state.hold; if(!h) return;
+      if(h.left<=1) this.finishHold(true);
+      else this.setState({hold:Object.assign({},h,{left:h.left-1})});
+    },1000);
+  }
+  finishHold(full){
+    const h=this.state.hold; if(!h) return;
+    clearInterval(this._timers.hold);
+    try{ window.Telegram.WebApp.HapticFeedback.notificationOccurred('success'); }catch(e){}
+    this.setState(st=>({hold:null,slog:Object.assign({},st.slog,{[h.ei+'_'+h.si]:{secs:full?h.total:h.total-h.left}})}));
+    this.startRest();
+  }
+  startCirc(ei){
+    clearInterval(this._timers.circ); this.haptic();
+    const ex=this.sDayNow().exs[ei];
+    this.setState(st=>({circ:{ei,round:1,st:0,stage:'work',left:ex.work,paused:false},nav:st.nav.concat(['circuit'])}));
+    this._timers.circ=setInterval(()=>this.tickCirc(),1000);
+  }
+  tickCirc(){
+    const c=this.state.circ; if(!c||c.paused) return;
+    const ex=this.sDayNow().exs[c.ei]; if(!ex){ clearInterval(this._timers.circ); return; }
+    if(c.left>1){ this.setState({circ:Object.assign({},c,{left:c.left-1})}); return; }
+    this.haptic();
+    if(c.stage==='work'){
+      if(c.st+1<ex.stations.length) this.setState({circ:Object.assign({},c,{stage:'rest',left:ex.rest})});
+      else if(c.round<ex.rounds) this.setState({circ:Object.assign({},c,{stage:'between',left:ex.between})});
+      else {
+        clearInterval(this._timers.circ);
+        try{ window.Telegram.WebApp.HapticFeedback.notificationOccurred('success'); }catch(e){}
+        this.setState(st=>({circ:null,slog:Object.assign({},st.slog,{[c.ei+'_0']:{done:true}}),nav:st.nav.filter(n=>n!=='circuit')}));
+        this.showToast('Circuit complete — strong work');
+      }
+    } else if(c.stage==='rest') this.setState({circ:Object.assign({},c,{stage:'work',st:c.st+1,left:ex.work})});
+    else this.setState({circ:Object.assign({},c,{stage:'work',st:0,round:c.round+1,left:ex.work})});
+  }
+  DEFIN = {timeframe:2,sleepBase:7.5,stress:'medium',work:'sedentary',stepsR:'5–7k',exp:'irregular',loc:'gym',daysWk:3,mealsN:4,cooks:'mix',sugary:'sometimes',alcohol:'sometimes',fastfood:'weekly',overeat:'evening–night',injuries:'',attempts:'',why:'',running:false};
+  mkProg(goal,itArg){
+    const it=itArg||(this.state&&this.state.intake)||this.DEFIN, pool=this.exPool(it), days=goal==='gain'?4:it.daysWk;
+    const pick=(cats,n)=>{ const out=[]; cats.forEach(c=>{ pool.filter(L=>L.cat===c).forEach(L=>{ if(out.length<n&&!out.includes(L)) out.push(L); }); }); return out.slice(0,n); };
+    let defs;
+    if(days<=2) defs=[['Full Body A',pick(['Legs','Push','Pull','Core'],6)],['Full Body B',pick(['Legs','Pull','Push','Cardio','Core'],6)]];
+    else if(days===3) defs=[['Full Body A',pick(['Legs','Push','Core'],6)],['Full Body B',pick(['Pull','Legs','Cardio'],6)],['Full Body C',pick(['Push','Pull','Core'],6)]];
+    else defs=[['Lower A',pick(['Legs'],5).concat(pick(['Core'],1))],['Upper A',pick(['Push','Pull'],6)],['Lower B',pick(['Legs','Cardio'],6)],['Upper B',pick(['Pull','Push','Core'],6)]].slice(0,days);
+    const prog=defs.map(d=>({name:d[0],exs:d[1].map(L=>this.mkEx(L,it))}));
+    prog[prog.length-1].exs.push(this.mkCirc());
+    if(it.running&&goal!=='gain') prog.push({name:'Run / Walk intervals',exs:[{n:'Run/walk intervals',cam:null,sets:1,reps:'6× (1 run / 2 walk)',wt:0,type:'reps',cue:'Conversational pace on the runs.',video:'',progn:''}],run:true});
+    return prog; }
+  paceInfo(){
+    const p=this.state.prof, it=this.state.intake;
+    const diff=p.target-p.weight, gain=diff>0, weeks=Math.max(1,it.timeframe*4.33);
+    const rate=Math.abs(diff)/weeks, pct=rate/p.weight*100, cap=gain?0.5:1.0;
+    const d=new Date(); d.setMonth(d.getMonth()+it.timeframe);
+    const by=d.toLocaleDateString('en-US',{day:'numeric',month:'short'});
+    const line=this.r5(p.target).toFixed(1)+' kg by ~'+by+' · '+(gain?'+':'−')+rate.toFixed(1)+' kg/week';
+    if(Math.abs(diff)<0.5) return {line:'Maintaining '+this.r5(p.weight).toFixed(1)+' kg — no pace pressure',tone:'ok',hint:''};
+    if(pct>cap){ const sugg=Math.min(12,Math.ceil(Math.abs(diff)/(p.weight*cap/100)/4.33));
+      return {line,tone:'warn',hint:'Too aggressive — risks muscle loss. We suggest '+sugg+' months.',sugg}; }
+    if(pct<0.25) return {line,tone:'ok',hint:'Gentle pace — sustainable'};
+    return {line,tone:'ok',hint:''}; }
+  genRules(){
+    const it=this.state.intake, r1=[];
+    if(it.sugary==='daily') r1.push('zero_sugar');
+    r1.push('log_all');
+    if(it.overeat==='evening–night') r1.push('kitchen_close');
+    if(it.fastfood==='often'||it.cooks==='mostly eat out') r1.push('order_out');
+    while(r1.length<3) ['zero_sugar','kitchen_close','protein_anchor'].forEach(x=>{ if(r1.length<3&&!r1.includes(x)) r1.push(x); });
+    return [
+      {focus:'Build the base — habits before numbers',rules:r1.slice(0,4),kcalVis:this.state.intake.exp==='regular'},
+      {focus:'Add the numbers — hit protein daily',rules:['protein_anchor','steps_floor','log_all'],kcalVis:true},
+      {focus:'Dial in — consistency over perfection',rules:['protein_anchor','steps_floor','bed_11','order_out'],kcalVis:true}]; }
+  genStepsT(){ const it=this.state.intake;
+    if(it.stepsR==='<5k') return 7000;
+    if(it.stepsR==='10k+') return 12000;
+    return it.work==='sedentary'?8000:10000; }
+  planWhy(){
+    const it=this.state.intake, out=[];
+    if(it.loc==='home, no equipment') out.push('You train at home with no equipment — your program is fully bodyweight-based.');
+    else if(it.loc==='home, basic') out.push('Home setup with basics — your program mixes bodyweight and dumbbell work.');
+    else out.push('You have gym access — your program uses full equipment from day one.');
+    if(it.sugary==='daily') out.push('Your biggest lever: cutting daily sugary drinks (~300 kcal/day) — it\'s rule #1.');
+    else if(it.overeat==='evening–night') out.push('Evening overeating is your pattern — the kitchen closes 3h before bed in week 1.');
+    else if(it.fastfood==='often'||it.cooks==='mostly eat out') out.push('You eat out a lot — the order-out protocol is in your week-1 rules.');
+    if(it.exp!=='regular') out.push('Week 1 is rules-only — calorie targets unlock in week 2, habits come first.');
+    else out.push('You train regularly — calorie targets are live from day one.');
+    out.push('Steps target starts at '+(this.genStepsT()/1000)+'k — set from your current '+it.stepsR+' baseline.');
+    return out; }
+  applyIntake(){ this.setState({prog:this.mkProg(this.state.prof.goal),phases:this.genRules(),stepsT:this.genStepsT()}); }
   lastOf(n){ return this.LASTW[n]||null; }
   dayIdx(){ return Math.min(1,this.state.prog.length-1); }
   mutProg(fn,structDi){
@@ -1901,7 +2209,7 @@ class Component extends DCLogic {
       const p=st.prog.map(d=>({name:d.name,exs:d.exs.map(e=>Object.assign({},e))}));
       fn(p);
       const clr=structDi===this.dayIdx();
-      return Object.assign({prog:p,editEx:null},clr?{slog:{},entry:null}:{});
+      return Object.assign({prog:p},structDi>=0?{editEx:null}:{},clr?{slog:{},entry:null}:{});
     });
   }
   WDELTAS = [3.4,3.2,3.3,2.9,2.8,2.6,2.5,2.3,2.0,1.5,2.0,1.0,0.5,0];
@@ -1950,12 +2258,14 @@ class Component extends DCLogic {
     selDay:null, exInfo:null,
     name:'Max', waterT:8, wSeq:0, wDelta:0, loadEx:'Goblet squat',
     ci:null, ciDraft:{sleep:7.5,q:3,mood:3,adh:4,sore:0,where:'',note:'',ext:null,extDur:60},
-    intake:{timeframe:2,sleepBase:7.5,stress:'medium',work:'sedentary',stepsR:'5–7k',exp:'irregular',loc:'gym',daysWk:3,mealsN:4,cooks:'mix',sugary:'sometimes',alcohol:'sometimes',fastfood:'weekly',overeat:'evening–night',injuries:'',attempts:'',why:''},
+    intake:{timeframe:2,sleepBase:7.5,stress:'medium',work:'sedentary',stepsR:'5–7k',exp:'irregular',loc:'gym',daysWk:3,mealsN:4,cooks:'mix',sugary:'sometimes',alcohol:'sometimes',fastfood:'weekly',overeat:'evening–night',injuries:'',attempts:'',why:'',running:false},
     phases:[
       {focus:'Build the base — habits before numbers',rules:['log_all','zero_sugar','kitchen_close'],kcalVis:false},
       {focus:'Add the numbers — hit protein daily',rules:['protein_anchor','steps_floor','log_all'],kcalVis:true},
       {focus:'Dial in — consistency over perfection',rules:['protein_anchor','steps_floor','bed_11','order_out'],kcalVis:true}],
     ruleChecks:{}, steps:6200, stepsT:10000, extActs:[], extType:null, extDur:60, adjDismissed:false,
+    warmupDone:false, warmupSkip:false, warmupOpen:true, hold:null, circ:null,
+    painFlags:{}, painArea:'', painText:'', painEx:null, painSaved:false, missed:true, missedDismiss:false, vidEx:'',
     sessionDone:false, rest:0, reps:0, manual:false, trackerName:'', toast:'', auto:null,
     anim:{kcal:0,prot:0,w:86.5}
   };
@@ -2043,9 +2353,11 @@ class Component extends DCLogic {
       prog:this.mkProg('lose'),slog:{},entry:null,editEx:null,libDay:0,libCat:'All',mSeg:'waist',savedArts:[],readCat:'All',
       rems:[{n:'Log meals',on:true,h:9,m:0},{n:'Workout',on:true,h:18,m:30},{n:'Water',on:false,h:14,m:0},{n:'Weigh-in',on:true,h:7,m:30}],remTP:null,selDay:null,exInfo:null,
       name:'Max',waterT:8,wSeq:0,wDelta:0,loadEx:'Goblet squat',ci:null,ciDraft:{sleep:7.5,q:3,mood:3,adh:4,sore:0,where:'',note:'',ext:null,extDur:60},
-      intake:{timeframe:2,sleepBase:7.5,stress:'medium',work:'sedentary',stepsR:'5–7k',exp:'irregular',loc:'gym',daysWk:3,mealsN:4,cooks:'mix',sugary:'sometimes',alcohol:'sometimes',fastfood:'weekly',overeat:'evening–night',injuries:'',attempts:'',why:''},
+      intake:{timeframe:2,sleepBase:7.5,stress:'medium',work:'sedentary',stepsR:'5–7k',exp:'irregular',loc:'gym',daysWk:3,mealsN:4,cooks:'mix',sugary:'sometimes',alcohol:'sometimes',fastfood:'weekly',overeat:'evening–night',injuries:'',attempts:'',why:'',running:false},
       phases:[{focus:'Build the base — habits before numbers',rules:['log_all','zero_sugar','kitchen_close'],kcalVis:false},{focus:'Add the numbers — hit protein daily',rules:['protein_anchor','steps_floor','log_all'],kcalVis:true},{focus:'Dial in — consistency over perfection',rules:['protein_anchor','steps_floor','bed_11','order_out'],kcalVis:true}],
       ruleChecks:{},steps:6200,stepsT:10000,extActs:[],extType:null,extDur:60,adjDismissed:false,
+      warmupDone:false,warmupSkip:false,warmupOpen:true,hold:null,circ:null,
+      painFlags:{},painArea:'',painText:'',painEx:null,painSaved:false,missed:true,missedDismiss:false,vidEx:'',
       sessionDone:false,rest:0,reps:0,manual:false,trackerName:'',toast:'',auto:null,anim:{kcal:0,prot:0,w:86.5}});
   }
   resetTap(){
@@ -2064,6 +2376,8 @@ class Component extends DCLogic {
       if(s.nav.length){
         const nav=s.nav.slice(0,-1);
         if(s.nav[s.nav.length-1]==='tracker'){ this.clearAuto(); return {nav,auto:null}; }
+        if(s.nav[s.nav.length-1]==='circuit'){ clearInterval(this._timers.circ); return {nav,circ:null}; }
+        if(!nav.includes('session')){ clearInterval(this._timers.hold); clearInterval(this._timers.rest); return {nav,hold:null,rest:0}; }
         if(!nav.includes('session')) clearInterval(this._timers.rest);
         return {nav, rest:nav.includes('session')?s.rest:0};
       }
@@ -2290,20 +2604,45 @@ class Component extends DCLogic {
       };
     });
     const di0=this.dayIdx(), sDay=s.prog[di0]||{name:'Rest day',exs:[]};
-    const setsTotal=Math.max(1,sDay.exs.reduce((a,e)=>a+e.sets,0)), setsDoneN=Object.keys(s.slog).length;
-    const exs=sDay.exs.map((ex,ei)=>({
-      n:ex.n, reps:ex.sets+' × '+ex.reps+(ex.wt?' · '+ex.wt+' kg':''),
+    const setsTotal=Math.max(1,sDay.exs.reduce((a,e)=>a+((e.type||'reps')==='circuit'?1:e.sets),0)), setsDoneN=Object.keys(s.slog).length;
+    const warmOk=s.warmupDone||s.warmupSkip;
+    const warmGuard=()=>{ if(!warmOk){ this.showToast('Warm-up first — it unlocks the session'); return false; } return true; };
+    const exs=sDay.exs.map((ex,ei)=>{
+      const type=ex.type||'reps';
+      const painArea=s.painFlags[ex.n];
+      return {
+      n:ex.n,
+      reps:type==='hold'?ex.sets+' × '+ex.dur+'s hold':(type==='circuit'?ex.reps:ex.sets+' × '+ex.reps+(ex.wt?' · '+ex.wt+' kg':' · BW')),
       infoTap:()=>this.openExInfo(ex.n),
-      cam:!!ex.cam, camTap:()=>{ let nsi=0; for(let k=0;k<ex.sets;k++){ if(!s.slog[ei+'_'+k]){ nsi=k; break; } } this.startAuto(ei,nsi); },
+      hasCue:!!ex.cue, cue:ex.cue||'',
+      hasProgn:!!ex.progn, progn:ex.progn||'',
+      videoTap:()=>this.setState(st=>({vidEx:ex.n,nav:st.nav.concat(['formvideo'])})),
+      painOn:!!painArea, painLabel:painArea?'⚑ '+painArea:'',
+      isCirc:type==='circuit',
+      circMin:type==='circuit'?'~'+Math.round(this.circTotal(ex)/60)+' min total':'',
+      circDone:type==='circuit'&&!!s.slog[ei+'_0'], circNotDone:type==='circuit'&&!s.slog[ei+'_0'],
+      circStart:()=>{ if(warmGuard()) this.startCirc(ei); },
+      cam:!!ex.cam, camTap:()=>{ if(!warmGuard()) return; let nsi=0; for(let k=0;k<ex.sets;k++){ if(!s.slog[ei+'_'+k]){ nsi=k; break; } } this.startAuto(ei,nsi); },
       hasLast:!!this.lastOf(ex.n), last:this.lastOf(ex.n)?'Last time · '+this.lastOf(ex.n):'',
       entryOn:!!(s.entry&&s.entry.ei===ei),
-      sets:Array.from({length:ex.sets},(_,si)=>{
-        const key=ei+'_'+si, done=!!s.slog[key];
-        return {l:done?'✓':String(si+1),
-          bc:done?AC:'rgba(255,255,255,.12)', bg:done?AC:'transparent', c:done?'#fff':'var(--tg-theme-text-color,#f1f2f6)',
-          tap:()=>{ this.haptic(); if(done){ this.setState(st=>{const sl=Object.assign({},st.slog); delete sl[key]; return {slog:sl};}); } else this.setState({entry:{ei,si,w:ex.wt,r:ex.reps,rpe:null}}); }};
+      sets:type==='circuit'?[]:Array.from({length:ex.sets},(_,si)=>{
+        const key=ei+'_'+si, lg=s.slog[key], done=!!lg&&!lg.skipped, skipped=!!lg&&!!lg.skipped;
+        const running=type==='hold'&&s.hold&&s.hold.ei===ei&&s.hold.si===si;
+        let l=done?'✓':(type==='hold'?ex.dur+'s':String(si+1)), bg=done?AC:'transparent';
+        if(skipped){ l='–'; }
+        if(running){ l=s.hold.left+'s'; const pct=Math.round((1-s.hold.left/s.hold.total)*100); bg='conic-gradient(var(--ac,#FF4D6D) '+pct+'%, rgba(255,255,255,.06) 0)'; }
+        return {l, fsz:type==='hold'?13:16,
+          bc:done?AC:(skipped?'rgba(255,255,255,.08)':(running?AC:'rgba(255,255,255,.12)')),
+          bg, c:done?'#fff':(skipped?HINT:'var(--tg-theme-text-color,#f1f2f6)'),
+          tap:()=>{
+            if(lg){ this.haptic(); this.setState(st=>{const sl=Object.assign({},st.slog); delete sl[key]; return {slog:sl};}); return; }
+            if(!warmGuard()) return;
+            this.haptic();
+            if(type==='hold'){ if(running) this.finishHold(false); else this.startHold(ei,si,ex.dur); }
+            else this.setState({entry:{ei,si,w:ex.wt,r:parseInt(ex.reps)||10,rpe:null,bw:!ex.wt}});
+          }};
       })
-    }));
+    };});
     const mealsLogged=s.meals.filter(m=>m.log).length;
     const workoutDone=s.sessionDone;
     const wTL=(s.waterT*0.25).toFixed(s.waterT%4===0?0:2).replace(/\.?0+$/,'');
@@ -2338,11 +2677,13 @@ class Component extends DCLogic {
     const art=this.ARTS[s.artId];
     const tabC=(t)=>s.tab===t?AC:HINT;
     const dayDefs=s.prog.map((d,i)=>{
-      const done=i<di0||(i===di0&&workoutDone);
+      const done=!d.run&&(i<di0||(i===di0&&workoutDone));
       const camN=d.exs.filter(e=>e.cam).length;
-      return {badge:done?'Done':(i===di0?'Today':'Upcoming'), badgeC:done?'#6fd39a':(i===di0?AC:HINT),
-        n:d.name, sub:d.exs.length+' exercises'+(camN?' · '+camN+' with camera':''),
-        done, today:i===di0&&!workoutDone, bc:i===di0&&!workoutDone?ACS:'transparent'};
+      return {badge:d.run?'Optional · weekly':(done?'Done':(i===di0?'Today':'Upcoming')), badgeC:d.run?'#7cc3ff':(done?'#6fd39a':(i===di0?AC:HINT)),
+        n:d.name, sub:d.run?d.exs[0].reps+' · logged as external activity':(d.exs.length+' exercises'+(camN?' · '+camN+' with camera':'')),
+        done, today:i===di0&&!workoutDone&&!d.run, isRun:!!d.run,
+        runLog:()=>{ this.haptic(); this.setState(st=>({extActs:st.extActs.concat([{t:'Run',dur:20}])})); this.showToast('Run/walk logged — counts toward your week'); },
+        bc:i===di0&&!workoutDone&&!d.run?ACS:'transparent'};
     });
     const mArr=this.MDATA[s.mSeg].slice();
     if(s.meas) mArr[mArr.length-1]=s.meas[s.mSeg];
@@ -2359,7 +2700,17 @@ class Component extends DCLogic {
       sexes:[{label:'Male',v:'m'},{label:'Female',v:'f'}].map(x=>Object.assign({label:x.label,pick:()=>this.setProf('sex',x.v)},sel(prof.sex===x.v))),
       fields:fieldDefs.map(mkStepper),
       acts:actDefs.map((a,i)=>Object.assign({label:a[0],desc:a[1],pick:()=>this.setProf('act',i)},sel(prof.act===i))),
-      obNext2:()=>this.setState({obStep:2}), obNext3:()=>this.setState({obStep:3}), obNext4:()=>this.setState({obStep:4}),
+      obNext2:()=>this.setState({obStep:2}), obNext3:()=>this.setState({obStep:3}),
+      obNext4:()=>{ this.applyIntake(); this.setState({obStep:4}); },
+      pace:(()=>{ const pi=this.paceInfo();
+        return {line:pi.line, hint:pi.hint, hasHint:!!pi.hint,
+          c:pi.tone==='warn'?'#f4c95d':'#6fd39a',
+          suggOn:!!pi.sugg, suggLabel:pi.sugg?'Use '+pi.sugg+' months':'',
+          useSugg:()=>{ if(pi.sugg){ this.haptic(); setIn('timeframe',pi.sugg); } }}; })(),
+      runOn:intake.running, runVisible:prof.goal!=='gain',
+      runKnobBg:intake.running?AC:'rgba(255,255,255,.12)', runKnobX:intake.running?'20px':'2px',
+      runTog:()=>{ this.haptic(); setIn('running',!intake.running); },
+      planWhy:this.planWhy(),
       ob3:s.obStep===3, ob4:s.obStep===4,
       obDots:[0,1,2,3,4].map(i=>({bg:i===s.obStep?AC:(i<s.obStep?ACS.replace('.14','.5'):'rgba(255,255,255,.12)')})),
       planKcal:plan.kcal, planProt:plan.prot, planCarb:plan.carbs, planFat:plan.fat,
@@ -2478,7 +2829,7 @@ class Component extends DCLogic {
       leftK:Math.max(0,plan.kcal-eat.k), mealRows,
       // workouts
       progs:[['lose','Lose · 3d'],['maintain','Maintain · 3d'],['gain','Gain · 4d']].map(p=>({label:p[1],
-        pick:()=>{ this.setProf('goal',p[0]); this.setState({prog:this.mkProg(p[0]),slog:{},entry:null,sessionDone:false}); this.showToast('Template applied — edit in Manage program'); },
+        pick:()=>{ this.setProf('goal',p[0]); this.setState(st=>({prog:this.mkProg(p[0]),slog:{},entry:null,sessionDone:false})); this.showToast('Template applied — edit in Manage program'); },
         bc:prof.goal===p[0]?AC:'rgba(255,255,255,.12)',bg:prof.goal===p[0]?ACS:'transparent',c:prof.goal===p[0]?AC:'var(--tg-theme-text-color,#f1f2f6)'})),
       days:dayDefs,
       manageProg:()=>this.push('editprog'), ovEditProg:s.nav.includes('editprog'), ovExLib:s.nav.includes('exlib'),
@@ -2486,6 +2837,7 @@ class Component extends DCLogic {
         name:d.name, count:d.exs.length+' exercises',
         canDel:s.prog.length>1, delDay:()=>{ this.haptic(); this.mutProg(p=>p.splice(di,1),di<=this.dayIdx()?this.dayIdx():-1); },
         addEx:()=>this.setState(st=>({libDay:di,libCat:'All',nav:st.nav.concat(['exlib'])})),
+        addCirc:()=>{ this.haptic(); this.mutProg(p=>p[di].exs.push(this.mkCirc()),di); this.showToast('Circuit added to '+d.name); },
         rows:d.exs.map((ex,ei)=>({
           name:ex.n, sum:ex.sets+' × '+ex.reps+(ex.wt?' · '+ex.wt+' kg':' · bodyweight'),
           up:()=>{ if(ei>0) this.mutProg(p=>{const a=p[di].exs, t=a[ei-1]; a[ei-1]=a[ei]; a[ei]=t;},di); },
@@ -2493,10 +2845,17 @@ class Component extends DCLogic {
           del:()=>{ this.haptic(); this.mutProg(p=>p[di].exs.splice(ei,1),di); },
           toggle:()=>this.setState(st=>({editEx:st.editEx&&st.editEx.di===di&&st.editEx.ei===ei?null:{di,ei}})),
           editOn:!!(s.editEx&&s.editEx.di===di&&s.editEx.ei===ei),
-          fields:[['sets','Sets','',1,1,8],['reps','Reps','',1,1,60],['wt','Weight','kg',2.5,0,300]].map(f=>({
+          fields:(ex.type==='hold'?[['sets','Sets','',1,1,8],['dur','Hold','s',5,10,120]]:(ex.type==='circuit'?[['rounds','Rounds','',1,1,6],['work','Work','s',5,10,90],['rest','Rest','s',5,10,90],['between','Between rounds','s',15,30,300]]:[['sets','Sets','',1,1,8],['wt','Weight','kg',2.5,0,300]])).map(f=>({
             label:f[1],unit:f[2],val:String(ex[f[0]]),
             minus:()=>this.mutProg(p=>{const o=p[di].exs[ei]; o[f[0]]=Math.max(f[4],this.r1(o[f[0]]-f[3]));},-1),
-            plus:()=>this.mutProg(p=>{const o=p[di].exs[ei]; o[f[0]]=Math.min(f[5],this.r1(o[f[0]]+f[3]));},-1)}))
+            plus:()=>this.mutProg(p=>{const o=p[di].exs[ei]; o[f[0]]=Math.min(f[5],this.r1(o[f[0]]+f[3]));},-1)})),
+          isReps:(ex.type||'reps')==='reps', repsV:String(ex.reps||''),
+          setRepsV:(e)=>this.mutProg(p=>{p[di].exs[ei].reps=e.target.value;},-1),
+          isCircE:ex.type==='circuit', stationsV:(ex.stations||[]).join(', '),
+          setStations:(e)=>this.mutProg(p=>{p[di].exs[ei].stations=e.target.value.split(',').map(x=>x.trim()).filter(Boolean);},-1),
+          cueV:ex.cue||'', setCue:(e)=>this.mutProg(p=>{p[di].exs[ei].cue=e.target.value;},-1),
+          videoV:ex.video||'', setVideo:(e)=>this.mutProg(p=>{p[di].exs[ei].video=e.target.value;},-1),
+          prognV:ex.progn||'', setProgn:(e)=>this.mutProg(p=>{p[di].exs[ei].progn=e.target.value;},-1)
         }))
       })),
       addDay:()=>{ this.haptic(); this.mutProg(p=>p.push({name:'Day '+(p.length+1),exs:[]}),-1); },
@@ -2506,10 +2865,65 @@ class Component extends DCLogic {
       libRows:this.LIB.filter(L=>s.libCat==='All'||L.cat===s.libCat).map(L=>({
         name:L.n, cat:L.cat, hasCam:!!L.cam,
         info:()=>this.openExInfo(L.n),
-        tap:()=>{ this.haptic(); const di=s.libDay, dn=s.prog[di].name; this.mutProg(p=>p[di].exs.push({n:L.n,cam:L.cam,sets:3,reps:L.dr,wt:L.dw}),di); this.goBack(); this.showToast(L.n+' added to '+dn); }
+        tap:()=>{ this.haptic(); const di=s.libDay, dn=s.prog[di].name, nx=this.mkEx(L,s.intake); this.mutProg(p=>p[di].exs.push(nx),di); this.goBack(); this.showToast(L.n+' added to '+dn); }
       })),
       libDayName:s.prog[s.libDay]?s.prog[s.libDay].name:'',
-      eW:s.entry?(s.entry.w?s.entry.w+' kg':'BW'):'', eR:s.entry?String(s.entry.r):'',
+      eW:s.entry?(s.entry.w?s.entry.w+' kg':'BW'):'', eR:s.entry?String(s.entry.r):'', eHasW:!!(s.entry&&!s.entry.bw),
+      // warm-up
+      warmOpen:s.warmupOpen&&!(s.warmupDone||s.warmupSkip), warmDone2:s.warmupDone||s.warmupSkip,
+      warmTog:()=>this.setState(st=>({warmupOpen:!st.warmupOpen})),
+      warmItems:['2 min jumping jacks or marching in place','10 arm circles each way','10 hip circles each way','10 slow bodyweight squats'],
+      warmCheck:()=>{ this.haptic(); this.setState({warmupDone:true,warmupOpen:false}); this.showToast('Session unlocked'); },
+      warmSkip:()=>this.setState({warmupSkip:true,warmupOpen:false}),
+      warmStatus:s.warmupDone?'Done':(s.warmupSkip?'Skipped':'Required before set 1'),
+      warmStatusC:(s.warmupDone||s.warmupSkip)?'#6fd39a':'#f4c95d',
+      // pain
+      openPain:()=>this.setState(st=>({painSaved:false,painArea:'',painText:'',painEx:sDay.exs.length?sDay.exs[0].n:'',nav:st.nav.concat(['painsheet'])})),
+      ovPain:s.nav.includes('painsheet'),
+      painAreaChips:['Knee','Lower back','Shoulder','Elbow','Hip','Wrist'].map(a=>({label:a,
+        pick:()=>{ this.haptic(); this.setState({painArea:a}); },
+        bc:s.painArea===a?'#ff6b6b':'rgba(255,255,255,.12)', bg:s.painArea===a?'rgba(255,107,107,.1)':'transparent', c:s.painArea===a?'#ff6b6b':'var(--tg-theme-text-color,#f1f2f6)'})),
+      painExChips:sDay.exs.map(ex=>({label:ex.n,
+        pick:()=>this.setState({painEx:ex.n}),
+        bc:s.painEx===ex.n?AC:'rgba(255,255,255,.12)', bg:s.painEx===ex.n?ACS:'transparent', c:s.painEx===ex.n?AC:'var(--tg-theme-text-color,#f1f2f6)'})),
+      painTextV:s.painText, setPainText:(e)=>this.setState({painText:e.target.value}),
+      painSaved:s.painSaved, painNotSaved:!s.painSaved, painSaveOp:s.painArea?1:0.45,
+      noVidUrl:(()=>{ let u=''; s.prog.forEach(d=>d.exs.forEach(x=>{ if(x.n===s.vidEx&&x.video) u=x.video; })); return !u; })(),
+      savePain:()=>{ if(!s.painArea) return; this.haptic();
+        const where=s.painArea+(s.painText.trim()?' — '+s.painText.trim():'');
+        this.setState(st=>({
+          painFlags:Object.assign({},st.painFlags,{[st.painEx]:st.painArea}),
+          ciDraft:Object.assign({},st.ciDraft,{sore:2,where}),
+          ci:st.ci?Object.assign({},st.ci,{sore:2,where}):st.ci,
+          painSaved:true}));
+        this.showToast('Reported — saved to today\'s check-in'); },
+      skipPainEx:()=>{ const name=s.painEx, ei2=sDay.exs.findIndex(x=>x.n===name);
+        if(ei2>=0){ const ex2=sDay.exs[ei2];
+          this.setState(st=>{ const sl=Object.assign({},st.slog);
+            const nSets=(ex2.type==='circuit')?1:ex2.sets;
+            for(let k=0;k<nSets;k++){ if(!sl[ei2+'_'+k]) sl[ei2+'_'+k]={skipped:true}; }
+            return {slog:sl,nav:st.nav.filter(n=>n!=='painsheet')}; });
+          this.showToast(name+' skipped — logged as skipped, not done'); } },
+      // circuit overlay
+      ovCircuit:s.nav.includes('circuit'),
+      circD:(()=>{ const c=s.circ; if(!c) return {on:false,stage:'',stageC:'#fff',left:'',station:'',next:'',round:'',pauseL:'Pause'};
+        const ex=sDay.exs[c.ei]||{stations:[],rounds:3};
+        const stName=ex.stations[c.st]||'', nx=c.st+1<ex.stations.length?ex.stations[c.st+1]:(c.round<ex.rounds?ex.stations[0]+' (next round)':'finish');
+        return {on:true,
+          stage:c.stage==='work'?'WORK':(c.stage==='rest'?'REST':'BETWEEN ROUNDS'),
+          stageC:c.stage==='work'?AC:(c.stage==='rest'?'#7cc3ff':'#f4c95d'),
+          left:String(c.left), station:c.stage==='work'?stName:(c.stage==='rest'?'Next: '+nx:'Shake it out'),
+          next:'Up next: '+nx, round:'Round '+c.round+' of '+ex.rounds,
+          pauseL:c.paused?'Resume':'Pause'}; })(),
+      circPause:()=>this.setState(st=>({circ:st.circ?Object.assign({},st.circ,{paused:!st.circ.paused}):null})),
+      circStop:()=>this.goBack(),
+      // form video
+      ovVideo:s.nav.includes('formvideo'), vidExN:s.vidEx,
+      vidUrl:(()=>{ let u=''; s.prog.forEach(d=>d.exs.forEach(x=>{ if(x.n===s.vidEx&&x.video) u=x.video; })); return u; })(),
+      hasVidUrl:(()=>{ let u=''; s.prog.forEach(d=>d.exs.forEach(x=>{ if(x.n===s.vidEx&&x.video) u=x.video; })); return !!u; })(),
+      // missed makeup
+      makeupOn:s.missed&&!s.missedDismiss,
+      makeupDismiss:()=>this.setState({missedDismiss:true}),
       eWm:()=>this.setState(st=>({entry:Object.assign({},st.entry,{w:Math.max(0,this.r1(st.entry.w-2.5))})})),
       eWp:()=>this.setState(st=>({entry:Object.assign({},st.entry,{w:Math.min(300,this.r1(st.entry.w+2.5))})})),
       eRm:()=>this.setState(st=>({entry:Object.assign({},st.entry,{r:Math.max(1,st.entry.r-1)})})),
@@ -2580,6 +2994,8 @@ class Component extends DCLogic {
           hasMeas2:isT&&!!s.meas, measV:s.meas?('Waist '+s.meas.waist.toFixed(1)+' · Chest '+s.meas.chest.toFixed(1)+' · Hips '+s.meas.hips.toFixed(1)+' cm'):'',
           hasNote2:isT?!!s.coachNote.trim():d%9===2, noteV:isT?s.coachNote:'Felt strong today, slept 8 hours. Skipped the snack — wasn\'t hungry.',
           hasExtR:isT&&s.extActs.length>0, extRList:s.extActs.map(a=>a.t+' · '+a.dur+' min').join(', '),
+          hasPain:isT&&Object.keys(s.painFlags).length>0,
+          painList:Object.keys(s.painFlags).map(n=>n+' ('+s.painFlags[n]+')').join(' · '),
           hasCi:isT?!!s.ci:sc>0,
           ciV:(()=>{ if(isT&&s.ci){ const c=s.ci; return 'Sleep '+c.sleep+' h (quality '+c.q+'/5) · mood '+c.mood+'/5 · nutrition '+c.adh+'/5 · '+(c.sore===0?'no soreness':(c.sore===1?'mild soreness':'notable soreness')+(c.where?' ('+c.where+')':'')); }
             const h=this.CIHIST[d%6]; return 'Sleep '+h.sl+' h · mood '+h.mo+'/5 · nutrition '+(3+d%3)+'/5 · '+(d%4===0?'mild soreness':'no soreness'); })()
@@ -2751,7 +3167,7 @@ class Component extends DCLogic {
       exportData:()=>{ try{ const blob=new Blob([JSON.stringify(this.state,null,2)],{type:'application/json'});
         const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='beetfit-data.json'; a.click(); }catch(e){}
         this.showToast('Data exported as JSON'); },
-      intakeRows:[['Timeframe',intake.timeframe+' months'],['Sleep baseline',intake.sleepBase+' h'],['Stress',intake.stress],['Work type',intake.work],['Daily steps',intake.stepsR],['Experience',intake.exp],['Location',intake.loc],['Days / week',String(intake.daysWk)],['Meals / day',String(intake.mealsN)],['Who cooks',intake.cooks],['Sugary drinks',intake.sugary],['Alcohol',intake.alcohol],['Fast food',intake.fastfood],['Overeating',intake.overeat],['Injuries',intake.injuries||'—'],['Past attempts',intake.attempts||'—'],['Motivation',intake.why||'—']].map(x=>({k:x[0],v:x[1]})),
+      intakeRows:[['Goal by',intake.timeframe+' months'],['Running',intake.running?'yes — weekly run/walk':'no'],['Sleep baseline',intake.sleepBase+' h'],['Stress',intake.stress],['Work type',intake.work],['Daily steps',intake.stepsR],['Experience',intake.exp],['Location',intake.loc],['Days / week',String(intake.daysWk)],['Meals / day',String(intake.mealsN)],['Who cooks',intake.cooks],['Sugary drinks',intake.sugary],['Alcohol',intake.alcohol],['Fast food',intake.fastfood],['Overeating',intake.overeat],['Injuries',intake.injuries||'—'],['Past attempts',intake.attempts||'—'],['Motivation',intake.why||'—']].map(x=>({k:x[0],v:x[1]})),
       openSettings:()=>this.push('settings'), ovSettings:s.nav.includes('settings'),
       setFields:[['age','Age','yrs',14,80,1],['height','Height','cm',130,220,1],['target','Target weight','kg',40,200,0.5]].map(mkStepper),
       setGoals:goalDefs.map(g=>Object.assign({title:g[1],pick:()=>{ this.haptic(); this.setProf('goal',g[0]); }},sel(prof.goal===g[0]))),
