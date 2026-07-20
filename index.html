@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muskan — Client Intake Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#150c14; --card:#221420; --accent:#f9a8d4; --accent2:#ec4899;
+    --text:#f5e9f0; --muted:#a98a9c; --border:#3a2432; --danger:#f87171;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.55; padding:24px 16px 80px;}
+  .brand-font{font-family:'Fredoka',sans-serif;}
+  .wrap{max-width:760px; margin:0 auto;}
+  .hidden{display:none;}
+
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+  @keyframes pop{0%{transform:scale(.55);opacity:0}65%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+  @keyframes drift{to{transform:translateY(-118vh) rotate(280deg);opacity:0;}}
+  .bob{animation:bob 3.4s ease-in-out infinite;}
+  .pop-in{animation:pop .4s ease-out both;}
+  #burst{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden;}
+  .bit{position:absolute;bottom:-8vh;animation:drift linear forwards;}
+  .mascot-row{display:flex; justify-content:center; gap:10px; margin-bottom:18px;}
+
+  .hook{text-align:center; padding:20px 4px;}
+  .hook h1{font-size:1.7rem; margin-bottom:10px;}
+  .hook p{color:var(--muted); font-size:.95rem; margin-bottom:22px; line-height:1.5;}
+  #no-wrap{position:relative; height:56px; margin-top:12px;}
+  #no-btn{position:absolute; left:50%; transform:translateX(-50%);
+    background:#0f0810; color:var(--muted); border:1px solid var(--border);
+    font-size:.82rem; padding:10px 20px; border-radius:10px; cursor:pointer;}
+
+  header{margin-bottom:16px;}
+  h1{font-size:1.6rem; margin-bottom:6px;}
+  .sub{color:var(--muted); font-size:.95rem;}
+
+  .progress-wrap{position:sticky; top:0; z-index:10; background:var(--bg); padding:10px 0 14px;}
+  .progress-track{height:6px; background:var(--border); border-radius:3px; overflow:hidden;}
+  .progress-fill{height:100%; width:0%; background:var(--accent); transition:width .35s ease;}
+  .progress-label{font-size:.78rem; color:var(--muted); margin-top:6px; display:flex; justify-content:space-between;}
+  .progress-label b{color:var(--accent); font-weight:700;}
+
+  .viewport{overflow:hidden; border-radius:12px; transition:height .35s ease;}
+  .track{display:flex; transition:transform .35s cubic-bezier(.4,0,.2,1);}
+  .step{flex:0 0 100%; box-sizing:border-box; background:var(--card); border:1px solid var(--border);
+    border-radius:12px; padding:22px 20px;}
+  .step-title{font-size:1.15rem; font-weight:700; margin-bottom:4px;}
+
+  .hint{font-size:.85rem; color:var(--muted); margin-bottom:14px;}
+  .field{margin-bottom:16px;}
+  .field:last-child{margin-bottom:0;}
+  label{display:block; font-weight:600; font-size:.92rem; margin-bottom:6px;}
+  .req::after{content:" *"; color:var(--danger);}
+  input[type=text],input[type=number],input[type=date],select,textarea{
+    width:100%; padding:10px 12px; background:#0f0810; border:1px solid var(--border);
+    border-radius:8px; color:var(--text); font-size:.95rem;}
+  input:focus,select:focus,textarea:focus{outline:none; border-color:var(--accent);
+    box-shadow:0 0 0 3px rgba(249,168,212,.25);}
+  textarea{min-height:100px; resize:vertical;}
+  .row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  @media(max-width:420px){.row{grid-template-columns:1fr;}}
+  .opts{display:flex; flex-wrap:wrap; gap:8px;}
+  .opts label{display:flex; align-items:center; gap:6px; font-weight:400;
+    background:#0f0810; border:1px solid var(--border); border-radius:8px;
+    padding:9px 13px; cursor:pointer; font-size:.9rem; margin:0;}
+  .opts label:has(input:checked){border-color:var(--accent); background:rgba(249,168,212,.1);}
+  .opts input{accent-color:var(--accent2);}
+  .note{font-size:.8rem; color:var(--muted); margin-top:4px;}
+  .warn{background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.35);
+    border-radius:10px; padding:14px; font-size:.88rem; margin-bottom:18px;}
+  .warn b{color:var(--danger);}
+
+  .wizard-nav{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:16px;}
+  button{padding:12px 22px; border:none; border-radius:10px; font-size:1rem;
+    font-weight:600; cursor:pointer;}
+  .btn-primary{background:var(--accent2); color:#1a0a14;}
+  .btn-primary:hover{background:var(--accent);}
+  .btn-ghost{background:transparent; color:var(--accent); border:1px solid var(--accent);}
+  #backBtn{visibility:hidden;}
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:8px; justify-content:center;}
+
+  #output{min-height:220px; font-family:ui-monospace,Menlo,monospace; font-size:.8rem; text-align:left; margin-top:6px; width:100%;}
+  .toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:var(--accent2); color:#1a0a14; padding:10px 20px; border-radius:10px;
+    font-weight:600; display:none; z-index:100;}
+</style>
+</head>
+<body>
+<div id="burst"></div>
+<div class="wrap">
+
+  <!-- STAGE 1: fun hook -->
+  <section id="stage-1" class="hook">
+    <div class="mascot-row">
+      <svg viewBox="0 0 100 110" width="64" height="70" class="bob">
+        <path d="M50 18 L38 6 L42 20 L28 12 L36 24 L50 20Z" fill="#7fae82"/>
+        <path d="M50 18 L62 6 L58 20 L72 12 L64 24 L50 20Z" fill="#7fae82"/>
+        <path d="M50 20C30 20 18 40 22 62C26 84 38 100 50 100C62 100 74 84 78 62C82 40 70 20 50 20Z" fill="#f43f5e"/>
+        <circle cx="35" cy="45" r="1.6" fill="#fecdd3"/><circle cx="50" cy="38" r="1.6" fill="#fecdd3"/>
+        <circle cx="65" cy="45" r="1.6" fill="#fecdd3"/><circle cx="30" cy="60" r="1.6" fill="#fecdd3"/>
+        <circle cx="45" cy="55" r="1.6" fill="#fecdd3"/><circle cx="55" cy="55" r="1.6" fill="#fecdd3"/>
+        <circle cx="70" cy="60" r="1.6" fill="#fecdd3"/><circle cx="38" cy="75" r="1.6" fill="#fecdd3"/>
+        <circle cx="62" cy="75" r="1.6" fill="#fecdd3"/><circle cx="50" cy="85" r="1.6" fill="#fecdd3"/>
+        <circle cx="42" cy="55" r="4.5" fill="#2a1420"/><circle cx="58" cy="55" r="4.5" fill="#2a1420"/>
+        <circle cx="43.5" cy="53.5" r="1.3" fill="#fff"/><circle cx="59.5" cy="53.5" r="1.3" fill="#fff"/>
+        <ellipse cx="33" cy="64" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+        <ellipse cx="67" cy="64" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+        <path d="M44 66 Q50 72 56 66" stroke="#2a1420" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M22 62 Q8 56 4 40" stroke="#f43f5e" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="4" cy="40" r="5" fill="#f43f5e"/>
+        <path d="M78 62 Q92 66 94 78" stroke="#f43f5e" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="94" cy="78" r="5" fill="#f43f5e"/>
+      </svg>
+      <svg viewBox="0 0 100 110" width="56" height="62" class="bob" style="animation-delay:.5s">
+        <path d="M50 14 L44 4 L47 12" stroke="#7fae82" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <g fill="#db2777">
+          <circle cx="50" cy="26" r="12"/><circle cx="36" cy="36" r="12"/><circle cx="64" cy="36" r="12"/>
+          <circle cx="30" cy="52" r="12"/><circle cx="70" cy="52" r="12"/>
+          <circle cx="42" cy="60" r="12"/><circle cx="58" cy="60" r="12"/><circle cx="50" cy="74" r="12"/>
+        </g>
+        <g fill="#f9a8d4" opacity=".55">
+          <circle cx="46" cy="22" r="3"/><circle cx="32" cy="32" r="3"/><circle cx="60" cy="32" r="3"/>
+        </g>
+        <circle cx="42" cy="55" r="4.2" fill="#2a0d20"/><circle cx="58" cy="55" r="4.2" fill="#2a0d20"/>
+        <circle cx="43.3" cy="53.6" r="1.2" fill="#fff"/><circle cx="59.3" cy="53.6" r="1.2" fill="#fff"/>
+        <path d="M44 64 Q50 69 56 64" stroke="#2a0d20" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M24 55 Q12 58 10 70" stroke="#db2777" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="10" cy="70" r="5" fill="#db2777"/>
+        <path d="M76 55 Q88 58 90 70" stroke="#db2777" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <circle cx="90" cy="70" r="5" fill="#db2777"/>
+      </svg>
+    </div>
+    <h1 class="brand-font">Welcome to the team, Muskan! 🍓</h1>
+    <p>~10 minutes of honest answers gets you a program built just for you — same way we built Dario's. Let's go.</p>
+    <button class="btn-primary" onclick="sayYes()" style="width:100%; padding:14px; font-size:1.05rem;">Let's start! 🍓</button>
+    <div id="no-wrap">
+      <button id="no-btn" onclick="dodgeNo()" onmouseenter="dodgeNo()">Maybe later...</button>
+    </div>
+  </section>
+
+  <!-- STAGE DEFER -->
+  <section id="stage-defer" class="hook hidden pop-in">
+    <p style="font-size:2.6rem; margin-bottom:6px;">🍓</p>
+    <h1 class="brand-font" style="font-size:1.4rem;">No rush</h1>
+    <p>Whenever you're ready — just reopen this link. The group chat isn't going anywhere.</p>
+    <button class="btn-ghost" onclick="goTo(1)" style="width:100%; padding:12px;">Actually, let's start now</button>
+  </section>
+
+  <!-- STAGE 2: the real intake form, as an 18-step wizard -->
+  <section id="stage-2" class="hidden">
+    <header>
+      <h1>Your Intake</h1>
+      <p class="sub">A few questions at a time — answer honestly, it's what makes the plan actually fit you.</p>
+    </header>
+
+    <div class="warn"><b>Important:</b> this program is not medical care. If you have chronic conditions, take medication, or your BMI is over 35 — see a doctor first.</div>
+
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+      <div class="progress-label"><span id="sectionLabel">Basics</span><b id="stepLabel">Step 1 of 18</b></div>
+    </div>
+
+    <form id="form">
+    <div class="viewport" id="viewport">
+      <div class="track" id="track">
+
+        <div class="step" data-section="Basics">
+          <p class="hint">Let's start with the basics.</p>
+          <div class="field"><label class="req">Name</label><input type="text" name="Name" required></div>
+          <div class="row">
+            <div class="field"><label class="req">Age</label><input type="number" name="Age" min="16" max="90" required></div>
+            <div class="field"><label class="req">Sex</label>
+              <div class="opts">
+                <label><input type="radio" name="Sex" value="Female" required> Female</label>
+                <label><input type="radio" name="Sex" value="Male"> Male</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Basics">
+          <p class="hint">Needed for your calorie targets.</p>
+          <div class="row">
+            <div class="field"><label class="req">Height, cm</label><input type="number" name="Height (cm)" min="120" max="230" required></div>
+            <div class="field"><label class="req">Weight, kg</label><input type="number" name="Weight (kg)" min="35" max="300" step="0.1" required></div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Basics">
+          <div class="row">
+            <div class="field"><label>Waist circumference, cm</label><input type="number" name="Waist (cm)" min="50" max="200">
+              <p class="note">Measure at navel level, relaxed stomach.</p></div>
+            <div class="field"><label class="req">Target weight, kg</label><input type="number" name="Target weight (kg)" min="35" max="200" required></div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Basics">
+          <div class="field"><label>Desired timeframe</label>
+            <div class="opts">
+              <label><input type="radio" name="Timeframe" value="3 months"> 3 months</label>
+              <label><input type="radio" name="Timeframe" value="6 months"> 6 months</label>
+              <label><input type="radio" name="Timeframe" value="12 months"> 12 months</label>
+              <label><input type="radio" name="Timeframe" value="No deadline"> No deadline</label>
+            </div>
+            <p class="note">Safe pace: 0.5–1% of body weight per week.</p>
+          </div>
+        </div>
+
+        <div class="step" data-section="Health">
+          <p class="hint">Critical — without this, the program can do harm.</p>
+          <div class="field"><label class="req">Chronic conditions / diagnoses</label>
+            <div class="opts">
+              <label><input type="checkbox" name="Diagnoses" value="None"> None</label>
+              <label><input type="checkbox" name="Diagnoses" value="Diabetes / prediabetes"> Diabetes / prediabetes</label>
+              <label><input type="checkbox" name="Diagnoses" value="Thyroid"> Thyroid</label>
+              <label><input type="checkbox" name="Diagnoses" value="Hypertension / heart"> Hypertension / heart</label>
+              <label><input type="checkbox" name="Diagnoses" value="Digestive issues"> Digestive issues</label>
+              <label><input type="checkbox" name="Diagnoses" value="Other"> Other</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Health">
+          <div class="field"><label>Medications you take regularly</label><input type="text" name="Medications" placeholder="Names or “none”"></div>
+          <div class="field"><label>Injuries / movement restrictions</label><input type="text" name="Injuries" placeholder="Knees, back, shoulders... or “none”"></div>
+        </div>
+
+        <div class="step" data-section="Health">
+          <div class="row">
+            <div class="field"><label class="req">Sleep, hours per night</label>
+              <select name="Sleep" required>
+                <option value="">— select —</option>
+                <option>Less than 6</option><option>6–7</option><option>7–8</option><option>More than 8</option>
+              </select></div>
+            <div class="field"><label class="req">Stress level</label>
+              <select name="Stress" required>
+                <option value="">— select —</option>
+                <option>Low</option><option>Medium</option><option>High</option><option>Very high</option>
+              </select></div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Activity">
+          <div class="field"><label class="req">Type of work</label>
+            <div class="opts">
+              <label><input type="radio" name="Work type" value="Desk job" required> Desk job</label>
+              <label><input type="radio" name="Work type" value="On my feet"> On my feet</label>
+              <label><input type="radio" name="Work type" value="Physical labor"> Physical labor</label>
+            </div>
+          </div>
+          <div class="field"><label class="req">Steps per day (average)</label>
+            <div class="opts">
+              <label><input type="radio" name="Steps" value="Under 4,000" required> under 4,000</label>
+              <label><input type="radio" name="Steps" value="4,000–7,000"> 4–7k</label>
+              <label><input type="radio" name="Steps" value="7,000–10,000"> 7–10k</label>
+              <label><input type="radio" name="Steps" value="Over 10,000"> 10k+</label>
+              <label><input type="radio" name="Steps" value="Don't know"> Don't know</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Activity">
+          <div class="field"><label class="req">Training experience</label>
+            <div class="opts">
+              <label><input type="radio" name="Experience" value="Never trained" required> Never</label>
+              <label><input type="radio" name="Experience" value="Trained before, quit"> Trained before, quit</label>
+              <label><input type="radio" name="Experience" value="Train irregularly"> Irregularly now</label>
+              <label><input type="radio" name="Experience" value="Train regularly"> Regularly now</label>
+            </div>
+          </div>
+          <div class="field"><label class="req">Where will you train</label>
+            <div class="opts">
+              <label><input type="radio" name="Training location" value="Gym" required> Gym</label>
+              <label><input type="radio" name="Training location" value="Home, no equipment"> Home, no equipment</label>
+              <label><input type="radio" name="Training location" value="Home, dumbbells/bands"> Home, dumbbells/bands</label>
+              <label><input type="radio" name="Training location" value="Outdoors / calisthenics"> Outdoors / pull-up bars</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Activity">
+          <div class="field"><label class="req">Days per week you can REALISTICALLY train</label>
+            <div class="opts">
+              <label><input type="radio" name="Days per week" value="2" required> 2</label>
+              <label><input type="radio" name="Days per week" value="3"> 3</label>
+              <label><input type="radio" name="Days per week" value="4"> 4</label>
+              <label><input type="radio" name="Days per week" value="5+"> 5+</label>
+            </div>
+            <p class="note">Better 2 consistently than 5 on paper.</p>
+          </div>
+        </div>
+
+        <div class="step" data-section="Nutrition">
+          <p class="hint">This is where the extra weight hides. No sugarcoating.</p>
+          <div class="field"><label class="req">Meals per day</label>
+            <div class="opts">
+              <label><input type="radio" name="Meals per day" value="1–2" required> 1–2</label>
+              <label><input type="radio" name="Meals per day" value="3"> 3</label>
+              <label><input type="radio" name="Meals per day" value="4–5"> 4–5</label>
+              <label><input type="radio" name="Meals per day" value="Chaotic"> Chaotic</label>
+            </div>
+          </div>
+          <div class="field"><label class="req">Sugary drinks (soda, juice, sweetened coffee/tea)</label>
+            <div class="opts">
+              <label><input type="radio" name="Sugary drinks" value="Daily" required> Daily</label>
+              <label><input type="radio" name="Sugary drinks" value="Few times a week"> Few times/week</label>
+              <label><input type="radio" name="Sugary drinks" value="Rarely"> Rarely</label>
+              <label><input type="radio" name="Sugary drinks" value="Never"> Never</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Nutrition">
+          <div class="field"><label class="req">A typical eating day (yesterday): everything you ate and drank from morning to night</label>
+            <textarea name="Typical eating day" required placeholder="Morning: coffee with sugar, sandwich...&#10;Lunch: ...&#10;Evening: ...&#10;Snacks: ..."></textarea></div>
+        </div>
+
+        <div class="step" data-section="Nutrition">
+          <div class="field"><label class="req">Alcohol</label>
+            <div class="opts">
+              <label><input type="radio" name="Alcohol" value="Few times a week" required> Few times/week</label>
+              <label><input type="radio" name="Alcohol" value="About once a week"> ~Once/week</label>
+              <label><input type="radio" name="Alcohol" value="Few times a month"> Few times/month</label>
+              <label><input type="radio" name="Alcohol" value="Don't drink"> Don't drink</label>
+            </div>
+          </div>
+          <div class="field"><label class="req">Fast food / food delivery</label>
+            <div class="opts">
+              <label><input type="radio" name="Fast food" value="Daily" required> Daily</label>
+              <label><input type="radio" name="Fast food" value="3–5 times/week"> 3–5 times/week</label>
+              <label><input type="radio" name="Fast food" value="1–2 times/week"> 1–2 times/week</label>
+              <label><input type="radio" name="Fast food" value="Rarely"> Rarely</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="Nutrition">
+          <div class="field"><label>When do you overeat most often?</label>
+            <div class="opts">
+              <label><input type="checkbox" name="Overeating" value="Evening/night"> Evening / night</label>
+              <label><input type="checkbox" name="Overeating" value="Under stress"> Under stress</label>
+              <label><input type="checkbox" name="Overeating" value="Weekends"> Weekends</label>
+              <label><input type="checkbox" name="Overeating" value="Social settings"> Social settings</label>
+              <label><input type="checkbox" name="Overeating" value="Don't notice"> Don't notice it</label>
+            </div>
+          </div>
+          <div class="field"><label>Foods you do NOT eat (allergy, religion, taste)</label>
+            <input type="text" name="Excluded foods" placeholder="Or “none”"></div>
+        </div>
+
+        <div class="step" data-section="Nutrition">
+          <div class="field"><label class="req">Who cooks / how do you eat</label>
+            <div class="opts">
+              <label><input type="radio" name="Who cooks" value="I cook" required> I cook</label>
+              <label><input type="radio" name="Who cooks" value="Family cooks"> Family cooks</label>
+              <label><input type="radio" name="Who cooks" value="Mostly eat out"> Mostly eat out</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-section="History">
+          <div class="field"><label class="req">Have you tried losing weight before? What exactly, and why did it fail?</label>
+            <textarea name="Previous attempts" required placeholder="Diets, sports, fasting... What broke down?"></textarea></div>
+        </div>
+
+        <div class="step" data-section="History">
+          <div class="field"><label class="req">When did you start gaining weight and what do you think caused it?</label>
+            <textarea name="Weight gain history" required placeholder="Year, events: job change, injury, stress..."></textarea></div>
+        </div>
+
+        <div class="step" data-section="History">
+          <div class="field"><label class="req">Why do you want this? Give a concrete reason.</label>
+            <textarea name="Motivation" required placeholder="“I want to lose weight” is not an answer. Health? Looks? Energy? A goal you're working toward?"></textarea></div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="wizard-nav">
+      <button type="button" class="btn-ghost" id="backBtn">Back</button>
+      <button type="button" class="btn-primary" id="nextBtn" style="flex:1;">Next</button>
+    </div>
+    </form>
+  </section>
+
+  <!-- STAGE 3: success -->
+  <section id="stage-3" class="hidden hook pop-in">
+    <svg viewBox="0 0 100 110" width="76" height="84" class="bob">
+      <path d="M50 18 L38 6 L42 20 L28 12 L36 24 L50 20Z" fill="#7fae82"/>
+      <path d="M50 18 L62 6 L58 20 L72 12 L64 24 L50 20Z" fill="#7fae82"/>
+      <path d="M50 20C30 20 18 40 22 62C26 84 38 100 50 100C62 100 74 84 78 62C82 40 70 20 50 20Z" fill="#f43f5e"/>
+      <circle cx="35" cy="45" r="1.6" fill="#fecdd3"/><circle cx="50" cy="38" r="1.6" fill="#fecdd3"/>
+      <circle cx="65" cy="45" r="1.6" fill="#fecdd3"/><circle cx="30" cy="60" r="1.6" fill="#fecdd3"/>
+      <circle cx="45" cy="55" r="1.6" fill="#fecdd3"/><circle cx="55" cy="55" r="1.6" fill="#fecdd3"/>
+      <circle cx="70" cy="60" r="1.6" fill="#fecdd3"/><circle cx="38" cy="75" r="1.6" fill="#fecdd3"/>
+      <circle cx="62" cy="75" r="1.6" fill="#fecdd3"/><circle cx="50" cy="85" r="1.6" fill="#fecdd3"/>
+      <circle cx="42" cy="55" r="4.5" fill="#2a1420"/><circle cx="58" cy="55" r="4.5" fill="#2a1420"/>
+      <circle cx="43.5" cy="53.5" r="1.3" fill="#fff"/><circle cx="59.5" cy="53.5" r="1.3" fill="#fff"/>
+      <ellipse cx="33" cy="64" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+      <ellipse cx="67" cy="64" rx="5" ry="3" fill="#ff8fa3" opacity=".6"/>
+      <path d="M44 66 Q50 72 56 66" stroke="#2a1420" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M22 62 Q8 56 4 40" stroke="#f43f5e" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="4" cy="40" r="5" fill="#f43f5e"/>
+      <path d="M78 62 Q92 66 94 78" stroke="#f43f5e" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="94" cy="78" r="5" fill="#f43f5e"/>
+    </svg>
+    <h1 class="brand-font" style="color:var(--accent);">All set!</h1>
+    <p id="emailStatus" style="font-weight:700; margin-bottom:10px;"></p>
+    <textarea id="output" readonly></textarea>
+    <div class="actions" style="margin-top:12px;">
+      <button class="btn-primary" id="copyBtn">Copy</button>
+      <button class="btn-ghost" id="dlBtn">Download .txt</button>
+    </div>
+    <p class="note" style="margin-top:10px;">Backup: paste this in the "Health, maybe wealth" chat if the automatic send fails.</p>
+  </section>
+
+</div>
+<div class="toast" id="toast">Copied</div>
+
+<script>
+const COACH_EMAIL = 'pavlo.tsyhanash@gmail.com';
+let dodge = 0;
+const form = document.getElementById('form');
+const steps = [...document.querySelectorAll('.step')];
+const track = document.getElementById('track');
+const viewport = document.getElementById('viewport');
+let current = 0;
+
+function goTo(id){
+  ['stage-1','stage-defer','stage-2','stage-3'].forEach(s => document.getElementById(s).classList.add('hidden'));
+  document.getElementById('stage-' + id).classList.remove('hidden');
+}
+
+function sayYes(){ goTo(2); renderStep(); }
+
+function dodgeNo(){
+  const btn = document.getElementById('no-btn');
+  const wrap = document.getElementById('no-wrap');
+  if(dodge >= 2){
+    document.getElementById('stage-1').classList.add('hidden');
+    document.getElementById('stage-defer').classList.remove('hidden');
+    return;
+  }
+  const cw = wrap.offsetWidth, bw = btn.offsetWidth;
+  const x = Math.floor(Math.random() * Math.max(0, cw - bw));
+  const y = Math.floor(Math.random() * 26) - 13;
+  btn.style.position = 'absolute';
+  btn.style.left = x + 'px';
+  btn.style.top = y + 'px';
+  dodge++;
+  btn.textContent = dodge === 1 ? 'Nice try 😄' : 'Okay, for real? 🍓';
+}
+
+function burst(n){
+  const box = document.getElementById('burst');
+  const bits = ['🍓','💗','🍇','✨'];
+  for(let i = 0; i < n; i++){
+    const el = document.createElement('div');
+    el.className = 'bit';
+    el.textContent = bits[Math.floor(Math.random() * bits.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.fontSize = (14 + Math.random() * 16) + 'px';
+    const dur = 1.6 + Math.random() * 1.4;
+    el.style.animationDuration = dur + 's';
+    el.style.animationDelay = (Math.random() * 0.3) + 's';
+    box.appendChild(el);
+    setTimeout(() => el.remove(), (dur + 0.5) * 1000);
+  }
+}
+
+/* ---- wizard engine ---- */
+function renderStep(){
+  track.style.transform = `translateX(-${current * 100}%)`;
+  viewport.style.height = steps[current].scrollHeight + 'px';
+  document.getElementById('backBtn').style.visibility = current === 0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').textContent = current === steps.length - 1 ? 'Submit answers' : 'Next';
+  const pct = Math.round((current / (steps.length - 1)) * 100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('sectionLabel').textContent = steps[current].dataset.section;
+  document.getElementById('stepLabel').textContent = `Step ${current + 1} of ${steps.length}`;
+}
+
+function stepValid(stepEl){
+  const req = stepEl.querySelectorAll('[required]');
+  const names = new Set([...req].map(el => el.name));
+  for(const n of names){
+    const els = stepEl.querySelectorAll(`[name="${n}"]`);
+    const first = els[0];
+    if(first.type === 'radio' || first.type === 'checkbox'){
+      if(![...els].some(e => e.checked)){ first.reportValidity(); return false; }
+    } else if(!first.checkValidity()){ first.reportValidity(); return false; }
+  }
+  return true;
+}
+
+function goNext(){
+  if(!stepValid(steps[current])) return;
+  if(current === steps.length - 1){ submitForm(); return; }
+  current++;
+  renderStep();
+}
+function goBack(){
+  if(current === 0) return;
+  current--;
+  renderStep();
+}
+document.getElementById('nextBtn').addEventListener('click', goNext);
+document.getElementById('backBtn').addEventListener('click', goBack);
+window.addEventListener('resize', () => { if(!document.getElementById('stage-2').classList.contains('hidden')) renderStep(); });
+form.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && e.target.tagName !== 'TEXTAREA'){
+    e.preventDefault();
+    goNext();
+  }
+});
+
+function collect(){
+  const data = {};
+  const fd = new FormData(form);
+  for(const [k, v] of fd.entries()){
+    if(!v) continue;
+    if(data[k]) data[k] += ', ' + v; else data[k] = v;
+  }
+  return data;
+}
+
+function submitForm(){
+  const d = collect();
+  const w = parseFloat(d['Weight (kg)']), h = parseFloat(d['Height (cm)']);
+  let bmi = '';
+  if(w && h){ bmi = (w / ((h/100)**2)).toFixed(1); }
+  let lines = ['=== CLIENT INTAKE — MUSKAN ===', 'Date: ' + new Date().toLocaleDateString('en-CA'), ''];
+  for(const [k, v] of Object.entries(d)){
+    lines.push(k + ': ' + v);
+  }
+  if(bmi) lines.push('', 'BMI (calculated): ' + bmi);
+  document.getElementById('output').value = lines.join('\n');
+
+  goTo(3);
+  burst(34);
+
+  const statusEl = document.getElementById('emailStatus');
+  statusEl.textContent = 'Sending to Pavlo…';
+  statusEl.style.color = 'var(--muted)';
+
+  const payload = Object.assign({}, d, bmi ? {'BMI (calculated)': bmi} : {}, {
+    _subject: 'New client intake — Muskan',
+    _template: 'table',
+    _captcha: 'false'
+  });
+
+  fetch('https://formsubmit.co/ajax/' + COACH_EMAIL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json'},
+    body: new URLSearchParams(payload).toString()
+  })
+  .then(r => { if(!r.ok) throw new Error('status ' + r.status); return r.json(); })
+  .then(() => {
+    statusEl.textContent = '✓ Sent to Pavlo automatically';
+    statusEl.style.color = 'var(--accent2)';
+  })
+  .catch(() => {
+    statusEl.textContent = '⚠ Auto-send failed — use Copy or Download below, and send it in the chat.';
+    statusEl.style.color = 'var(--danger)';
+  });
+}
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const t = document.getElementById('output');
+  t.select();
+  navigator.clipboard.writeText(t.value).then(() => {
+    const toast = document.getElementById('toast');
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 1800);
+  });
+});
+
+document.getElementById('dlBtn').addEventListener('click', () => {
+  const blob = new Blob([document.getElementById('output').value], {type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'muskan_intake_answers.txt';
+  a.click();
+});
+</script>
+</body>
+</html>
